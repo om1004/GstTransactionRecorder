@@ -12,9 +12,27 @@ document.addEventListener('DOMContentLoaded',function(){
         e.preventDefault();
         var gstin = document.getElementById('gstin').value;
         var date = document.getElementById('date').value;
+        var invoice = document.getElementById('invoice').value;
+        var product = document.getElementById('product').value;
+        var amt = document.getElementById('amt').value;
+        var tax_slab = document.getElementById('tax_slab');
+        
+        var tax_slabs = Array.from(tax_slab.selectedOptions).map(option => option.value);
+
+
         var flag = false;
-        // if(!gstinRegex.test(gstin))
-            console.log(date);
+        if(!gstinRegex.test(gstin)){
+            flag = true;
+        }
+        var obj = {
+            "gstin" : gstin,
+            "date" : date,
+            "invoice" : invoice,
+            "product" : product,
+            "amt" : amt,
+            "tax_slab" : tax_slabs
+        }
+            console.log(obj);
         
 
     });
