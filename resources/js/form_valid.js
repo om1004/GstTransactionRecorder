@@ -8,7 +8,7 @@ document.addEventListener('DOMContentLoaded',function(){
     
     
 
-    formOb.addEventListener('submit', function(e){
+    formOb.addEventListener('submit',async function(e){
         e.preventDefault();
         var gstin = document.getElementById('gstin').value;
         var date = document.getElementById('date').value;
@@ -32,7 +32,19 @@ document.addEventListener('DOMContentLoaded',function(){
             "amt" : amt,
             "tax_slab" : tax_slabs
         }
-            console.log(obj);
+
+        const res = await fetch('/transactions/store', {
+            method : 'POST',
+            headers : {
+                'Content-Type' : 'application/json',
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+
+            },
+            body : JSON.stringify(obj)
+        });
+
+        const data = await res.json();
+        console.log(data);
         
 
     });
