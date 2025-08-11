@@ -1,51 +1,59 @@
-document.addEventListener('DOMContentLoaded',function(){
+document.addEventListener('DOMContentLoaded', function () {
     console.log('step1: complete js mapped successfully');
 
 
     var formOb = document.getElementById('transaction_form');
     const gstinRegex = /^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$/;
     const dateregex = /^\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])$/;
-    
-    
 
-    formOb.addEventListener('submit',async function(e){
+
+
+    formOb.addEventListener('submit', async function (e) {
         e.preventDefault();
         var gstin = document.getElementById('gstin').value;
         var date = document.getElementById('date').value;
         var invoice = document.getElementById('invoice').value;
         var product = document.getElementById('product').value;
-        var amt = document.getElementById('amt').value;
+        var amt5 = document.getElementById('amt5').value;
+        var amt12 = document.getElementById('amt12').value;
+        var amt18 = document.getElementById('amt18').value;
+        var amt24 = document.getElementById('amt24').value;
         var tax_slab = document.getElementById('tax_slab');
-        
-        var tax_slabs = Array.from(tax_slab.selectedOptions).map(option => option.value);
+
+        // var tax_slabs = Array.from(tax_slab.selectedOptions).map(option => option.value);
 
 
         var flag = false;
-        if(!gstinRegex.test(gstin)){
+        if (!gstinRegex.test(gstin)) {
             flag = true;
         }
+        
         var obj = {
-            "gstin" : gstin,
-            "date" : date,
-            "invoice" : invoice,
-            "product" : product,
-            "amt" : amt,
-            "tax_slab" : tax_slabs
-        }
+            "gstin": gstin,
+            "date": date,
+            "invoice": invoice,
+            "product": product,
+            "amts": {
+                    5   : amt5 == '' ? 0:parseInt(amt5),
+                    12  : amt12 == '' ? 0:parseInt(amt12),
+                    18  : amt18 == '' ? 0:parseInt(amt18),
+                    24  : amt24 == '' ? 0:parseInt(amt24)
+            }
+        };
 
         const res = await fetch('/transactions/store', {
-            method : 'POST',
-            headers : {
-                'Content-Type' : 'application/json',
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
                 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
 
             },
-            body : JSON.stringify(obj)
+            body: JSON.stringify(obj)
         });
 
         const data = await res.json();
         console.log(data);
-        
+
 
     });
 });

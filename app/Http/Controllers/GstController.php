@@ -32,28 +32,37 @@ class GstController extends Controller
 
     public function transactionStore(Request $request)
     {
-        $validate = $request->validate([
-            'gstin' => 'string|required',
-            'date' => 'string|required',
-            'invoice' => 'string|required',
-            'product' => 'string|required',
-            'amt' => 'integer|required',
-            'tax_slab' => 'array|required'
-        ]);
+        try{
 
-        Transaction::create([
-            'invoice' => $validate['invoice'],
-            'seller_gstin' => $validate['gstin'],
-            'trans_date' => $validate['date'],
-            'product_name' => $validate['product'],
-            'total' => $validate['amt']
-        ]);
+            $validate = $request->validate([
+                'gstin' => 'string|required',
+                'date' => 'string|required',
+                'invoice' => 'string|required',
+                'product' => 'string|required',
+                'amts' => 'array|required'
+            ]);
+            
+            Transaction::create([
+                'invoice' => $validate['invoice'],
+                'seller_gstin' => $validate['gstin'],
+                'trans_date' => $validate['date'],
+                'product_name' => $validate['product'],
+                'total' => 1023
+            ]);
+            foreach ($validate['amts'] as $taxslab => $value) {
+                if($value>0){
+                    Taxes::create([
+                    'invoice'   => $validate['invoice'],
+                    'tax_slab'  => $taxslab,
+                    'amount'    => $value
+                ]);
+            }
+        }
+        }catch(\Exception $e) {
+            return response()->json(['message'=>$e->getMessage()]);
+        }
 
 
-        Taxes::create([
-            'invoice' => $validate['invoice'],
-            'tax_slab' => 5
-        ]);
 
         return response()->json(['message'=>'Data saved successfully']);
 

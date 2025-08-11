@@ -7,5 +7,5 @@ use Illuminate\Database\Eloquent\Model;
 class Taxes extends Model
 {
     protected $table = 'taxes';
-    protected $fillable = ['invoice','tax_slab'];
+    protected $fillable = ['invoice','tax_slab','amount'];
 }
